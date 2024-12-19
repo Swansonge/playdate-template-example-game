@@ -5,56 +5,41 @@ import "CoreLibs/timer"
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
-local TAGS = {
-    PICKUP = 1
-}
-
-local GAME_STATE = {
-    STOPPED = 1,
-    ACTIVE = 2
-}
-local gameState = GAME_STATE.STOPPED
-
+-- Player
 local playerVelocity = 3
-local playerImage = gfx.image.new(32, 32, gfx.kColorBlack)
+local playerImage = gfx.image.new("images/capybara")
 local playerSprite = gfx.sprite.new(playerImage)
+playerSprite.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 playerSprite:setCollideRect(0, 0, playerSprite:getSize())
 playerSprite:moveTo(200, 120)
 playerSprite:add()
 
-local minX, maxX = 0, 400
-local minY, maxY = 0, 240
+-- Game State
+local GAME_STATE = {
+    STOPPED = 1,
+    ACTIVE = 2
+}
 
-local function checkBoundary()
-    if playerSprite.x < minX then
-        playerSprite:moveTo(minX, playerSprite.y)
-    elseif playerSprite.x > maxX then
-        playerSprite:moveTo(maxX, playerSprite.y)
-    end
-    if playerSprite.y < minY then
-        playerSprite:moveTo(playerSprite.x, minY)
-    elseif playerSprite.y > maxY then
-        playerSprite:moveTo(playerSprite.x, maxY)
-    end
-end
+local gameState = GAME_STATE.STOPPED
+local pickupCount = 0
+local gameTime = 5 * 1000
+local gameTimer
 
-local pickupImage = gfx.image.new(16, 16)
-gfx.pushContext(pickupImage)
-    gfx.setColor(gfx.kColorBlack)
-    gfx.drawCircleInRect(0, 0, pickupImage:getSize())
-gfx.popContext()
+-- Pickup
+local TAGS = {
+    PICKUP = 1
+}
 
+local pickupImage = gfx.image.new("images/grass")
 local function spawnPickup()
+    local minX, maxX = 0, 400
+    local minY, maxY = 0, 240
     local pickupSprite = gfx.sprite.new(pickupImage)
     pickupSprite:setTag(TAGS.PICKUP)
     pickupSprite:setCollideRect(0, 0, pickupSprite:getSize())
     pickupSprite:moveTo(math.random(minX, maxX), math.random(minY, maxY))
     pickupSprite:add()
 end
-
-local pickupCount = 0
-local gameTime = 10 * 1000
-local gameTimer = nil
 
 function pd.update()
     gfx.sprite.update()
@@ -80,8 +65,14 @@ function pd.update()
         local yVelocity = math.sin(math.rad(crankPosition)) * playerVelocity
         local targetX = playerSprite.x + xVelocity
         local targetY = playerSprite.y + yVelocity
+
+        if xVelocity < 0 then
+            playerSprite:setImageFlip(gfx.kImageFlippedX)
+        elseif xVelocity > 0 then
+            playerSprite:setImageFlip(gfx.kImageUnflipped)
+        end
+
         local actualX, actualY, collisions, len = playerSprite:moveWithCollisions(targetX, targetY)
-        checkBoundary()
         for i=1, len do
             local collision = collisions[i]
             local collidedSprite = collision.other
