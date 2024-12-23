@@ -5,12 +5,14 @@ local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
 -- Player
+local playerStartX = 40
+local playerStartY = 120
 local playerVelocity = 0
 local playerAcceleration = 0.4
 local playerImage = gfx.image.new("images/capybara")
 local playerSprite = gfx.sprite.new(playerImage)
 playerSprite:setCollideRect(0, 0, 32, 24)
-playerSprite:moveTo(40, 120)
+playerSprite:moveTo(playerStartX, playerStartY)
 playerSprite:add()
 
 -- Game State
@@ -41,7 +43,7 @@ function pd.update()
             score = 0
             playerVelocity = 0
             obstacleVelocity = 5
-            playerSprite:moveTo(40, 120)
+            playerSprite:moveTo(playerStartX, playerStartY)
             obstacleSprite:moveTo(450, math.random(40, 200))
         end
     elseif gameState == GAME_STATE.ACTIVE then
