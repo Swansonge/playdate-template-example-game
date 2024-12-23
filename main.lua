@@ -1,17 +1,16 @@
 import "CoreLibs/graphics"
 import "CoreLibs/sprites"
-import "CoreLibs/timer"
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
 -- Player
-local playerVelocity = 3
+local playerVelocity = 0
+local playerAcceleration = 0.4
 local playerImage = gfx.image.new("images/capybara")
 local playerSprite = gfx.sprite.new(playerImage)
-playerSprite.collisionResponse = gfx.sprite.kCollisionTypeOverlap
-playerSprite:setCollideRect(0, 0, playerSprite:getSize())
-playerSprite:moveTo(200, 120)
+playerSprite:setCollideRect(0, 0, 32, 24)
+playerSprite:moveTo(40, 120)
 playerSprite:add()
 
 -- Game State
@@ -21,70 +20,48 @@ local GAME_STATE = {
 }
 
 local gameState = GAME_STATE.STOPPED
-local pickupCount = 0
-local gameTime = 5 * 1000
-local gameTimer
+local score = 0
 
--- Pickup
-local TAGS = {
-    PICKUP = 1
-}
-
-local pickupImage = gfx.image.new("images/grass")
-local function spawnPickup()
-    local minX, maxX = 0, 400
-    local minY, maxY = 0, 240
-    local pickupSprite = gfx.sprite.new(pickupImage)
-    pickupSprite:setTag(TAGS.PICKUP)
-    pickupSprite:setCollideRect(0, 0, pickupSprite:getSize())
-    pickupSprite:moveTo(math.random(minX, maxX), math.random(minY, maxY))
-    pickupSprite:add()
-end
+-- Obstacle
+local obstacleVelocity = 5
+local obstacleImage = gfx.image.new(20, 40, gfx.kColorBlack)
+local obstacleSprite = gfx.sprite.new(obstacleImage)
+obstacleSprite:moveTo(450, 120)
+obstacleSprite.collisionResponse = gfx.sprite.kCollisionTypeOverlap
+obstacleSprite:setCollideRect(0, 0, 20, 40)
+obstacleSprite:add()
 
 function pd.update()
     gfx.sprite.update()
-    pd.timer.updateTimers()
 
     if gameState == GAME_STATE.STOPPED then
         gfx.drawTextAligned("Press A to Start", 200, 40, kTextAlignment.center)
         if pd.buttonJustPressed(pd.kButtonA) then
-            gfx.sprite.removeAll()
-            playerSprite:moveTo(200, 120)
-            playerSprite:add()
-            gameTimer = pd.timer.new(gameTime, gameTime / 1000, 0)
-            gameTimer.timerEndedCallback = function()
-                gameState = GAME_STATE.STOPPED
-            end
-            pickupCount = 0
             gameState = GAME_STATE.ACTIVE
-            spawnPickup()
+            score = 0
+            playerVelocity = 0
+            obstacleVelocity = 5
+            playerSprite:moveTo(40, 120)
+            obstacleSprite:moveTo(450, math.random(40, 200))
         end
     elseif gameState == GAME_STATE.ACTIVE then
-        local crankPosition = pd.getCrankPosition() - 90
-        local xVelocity = math.cos(math.rad(crankPosition)) * playerVelocity
-        local yVelocity = math.sin(math.rad(crankPosition)) * playerVelocity
-        local targetX = playerSprite.x + xVelocity
-        local targetY = playerSprite.y + yVelocity
-
-        if xVelocity < 0 then
-            playerSprite:setImageFlip(gfx.kImageFlippedX)
-        elseif xVelocity > 0 then
-            playerSprite:setImageFlip(gfx.kImageUnflipped)
+        local crankPosition = pd.getCrankPosition()
+        if crankPosition <= 90 or crankPosition >= 270 then
+            playerVelocity -= playerAcceleration
+        else
+            playerVelocity += playerAcceleration
         end
+        playerSprite:moveBy(0, playerVelocity)
 
-        local actualX, actualY, collisions, len = playerSprite:moveWithCollisions(targetX, targetY)
-        for i=1, len do
-            local collision = collisions[i]
-            local collidedSprite = collision.other
-            if collidedSprite:getTag() == TAGS.PICKUP then
-                pickupCount += 1
-                collidedSprite:remove()
-                spawnPickup()
-            end
+        local actualX, actualY, collisions, length = obstacleSprite:moveWithCollisions(obstacleSprite.x - obstacleVelocity, obstacleSprite.y)
+        if length > 0 or playerSprite.y > 290 or playerSprite.y < -50 then
+            gameState = GAME_STATE.STOPPED
+        elseif actualX < -20 then
+            obstacleSprite:moveTo(450, math.random(40, 200))
+            score += 1
+            obstacleVelocity += 0.2
         end
-
-        gfx.drawTextAligned("Time: " .. math.ceil(gameTimer.value), 396, 4, kTextAlignment.right)
     end
 
-    gfx.drawText("Score: " .. pickupCount, 4, 4)
+    gfx.drawTextAligned("Score: " .. score, 390, 10, kTextAlignment.right)
 end
