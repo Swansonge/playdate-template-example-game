@@ -1,5 +1,7 @@
+-- Step 2: Control the player
+
 local pd <const> = playdate
-local gfx <const> = playdate.graphics
+local gfx <const> = pd.graphics
 
 -- Player
 local playerX = 40

@@ -1,3 +1,5 @@
+-- Step 8: Keep track of score
+
 import "CoreLibs/graphics"
 import "CoreLibs/sprites"
 
@@ -23,7 +25,6 @@ local score = 0
 local obstacleVelocity = 5
 local obstacleImage = gfx.image.new(20, 40, gfx.kColorBlack)
 local obstacleSprite = gfx.sprite.new(obstacleImage)
-obstacleSprite.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 obstacleSprite:setCollideRect(0, 0, 20, 40)
 obstacleSprite:moveTo(450, 240)
 obstacleSprite:add()
@@ -37,7 +38,6 @@ function pd.update()
             gameState = "active"
             score = 0
             playerVelocity = 0
-            obstacleVelocity = 5
             playerSprite:moveTo(playerStartX, playerStartY)
             obstacleSprite:moveTo(450, math.random(40, 200))
         end
@@ -54,7 +54,6 @@ function pd.update()
         if actualX < -20 then
             obstacleSprite:moveTo(450, math.random(40, 200))
             score += 1
-            obstacleVelocity += 0.2
         end
 
         if length > 0 or playerSprite.y > 270 or playerSprite.y < -30 then

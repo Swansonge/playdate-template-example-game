@@ -1,3 +1,5 @@
+-- Step 9: Ramp obstacle speed and fix collision bug
+
 import "CoreLibs/graphics"
 import "CoreLibs/sprites"
 
