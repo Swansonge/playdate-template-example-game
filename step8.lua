@@ -13,7 +13,7 @@ local playerVelocity = 0
 local playerAcceleration = 0.2
 local playerImage = gfx.image.new("images/capybara")
 local playerSprite = gfx.sprite.new(playerImage)
-playerSprite:setCollideRect(0, 0, 32, 24)
+playerSprite:setCollideRect(0, 0, 64, 48)
 playerSprite:moveTo(playerStartX, playerStartY)
 playerSprite:add()
 
@@ -23,9 +23,9 @@ local score = 0
 
 -- Obstacle
 local obstacleVelocity = 5
-local obstacleImage = gfx.image.new(20, 40, gfx.kColorBlack)
+local obstacleImage = gfx.image.new("images/rock")
 local obstacleSprite = gfx.sprite.new(obstacleImage)
-obstacleSprite:setCollideRect(0, 0, 20, 40)
+obstacleSprite:setCollideRect(0, 0, 48, 48)
 obstacleSprite:moveTo(450, 240)
 obstacleSprite:add()
 

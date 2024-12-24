@@ -10,7 +10,7 @@ local playerStartX = 40
 local playerStartY = 120
 local playerImage = gfx.image.new("images/capybara")
 local playerSprite = gfx.sprite.new(playerImage)
-playerSprite:setCollideRect(0, 0, 32, 24)
+playerSprite:setCollideRect(0, 0, 64, 48)
 playerSprite:moveTo(playerStartX, playerStartY)
 playerSprite:add()
 
