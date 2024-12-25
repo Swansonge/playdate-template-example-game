@@ -1,4 +1,4 @@
--- Step 8: Keep track of score
+-- Step 8: Ramp obstacle speed and fix collision bug
 
 import "CoreLibs/graphics"
 import "CoreLibs/sprites"
@@ -9,8 +9,7 @@ local gfx <const> = pd.graphics
 -- Player
 local playerStartX = 40
 local playerStartY = 120
-local playerVelocity = 0
-local playerAcceleration = 0.15
+local playerSpeed = 3
 local playerImage = gfx.image.new("images/capybara")
 local playerSprite = gfx.sprite.new(playerImage)
 playerSprite:setCollideRect(0, 0, 64, 48)
@@ -22,9 +21,10 @@ local gameState = "stopped"
 local score = 0
 
 -- Obstacle
-local obstacleVelocity = 5
+local obstacleSpeed = 5
 local obstacleImage = gfx.image.new("images/rock")
 local obstacleSprite = gfx.sprite.new(obstacleImage)
+obstacleSprite.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 obstacleSprite:setCollideRect(0, 0, 48, 48)
 obstacleSprite:moveTo(450, 240)
 obstacleSprite:add()
@@ -37,23 +37,23 @@ function pd.update()
         if pd.buttonJustPressed(pd.kButtonA) then
             gameState = "active"
             score = 0
-            playerVelocity = 0
+            obstacleSpeed = 5
             playerSprite:moveTo(playerStartX, playerStartY)
             obstacleSprite:moveTo(450, math.random(40, 200))
         end
     elseif gameState == "active" then
         local crankPosition = pd.getCrankPosition()
         if crankPosition <= 90 or crankPosition >= 270 then
-            playerVelocity -= playerAcceleration
+            playerSprite:moveBy(0, -playerSpeed)
         else
-            playerVelocity += playerAcceleration
+            playerSprite:moveBy(0, playerSpeed)
         end
-        playerSprite:moveBy(0, playerVelocity)
 
-        local actualX, actualY, collisions, length = obstacleSprite:moveWithCollisions(obstacleSprite.x - obstacleVelocity, obstacleSprite.y)
+        local actualX, actualY, collisions, length = obstacleSprite:moveWithCollisions(obstacleSprite.x - obstacleSpeed, obstacleSprite.y)
         if actualX < -20 then
             obstacleSprite:moveTo(450, math.random(40, 200))
             score += 1
+            obstacleSpeed += 0.2
         end
 
         if length > 0 or playerSprite.y > 270 or playerSprite.y < -30 then
