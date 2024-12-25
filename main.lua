@@ -8,7 +8,7 @@ local gfx <const> = pd.graphics
 local playerStartX = 40
 local playerStartY = 120
 local playerVelocity = 0
-local playerAcceleration = 0.2
+local playerAcceleration = 0.15
 local playerImage = gfx.image.new("images/capybara")
 local playerSprite = gfx.sprite.new(playerImage)
 playerSprite:setCollideRect(0, 0, 64, 48)
