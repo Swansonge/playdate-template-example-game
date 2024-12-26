@@ -39,7 +39,7 @@ function pd.update()
             score = 0
             obstacleSpeed = 5
             playerSprite:moveTo(playerStartX, playerStartY)
-            obstacleSprite:moveTo(450, math.random(0, 240))
+            obstacleSprite:moveTo(450, math.random(40, 200))
         end
     elseif gameState == "active" then
         local crankPosition = pd.getCrankPosition()
@@ -51,7 +51,7 @@ function pd.update()
 
         local actualX, actualY, collisions, length = obstacleSprite:moveWithCollisions(obstacleSprite.x - obstacleSpeed, obstacleSprite.y)
         if actualX < -20 then
-            obstacleSprite:moveTo(450, math.random(0, 240))
+            obstacleSprite:moveTo(450, math.random(40, 200))
             score += 1
             obstacleSpeed += 0.2
         end
