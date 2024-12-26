@@ -23,6 +23,7 @@ local gameState = "stopped"
 local obstacleSpeed = 5
 local obstacleImage = gfx.image.new("images/rock")
 local obstacleSprite = gfx.sprite.new(obstacleImage)
+obstacleSprite.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 obstacleSprite:setCollideRect(0, 0, 48, 48)
 obstacleSprite:moveTo(450, 240)
 obstacleSprite:add()
