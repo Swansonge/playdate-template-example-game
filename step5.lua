@@ -35,7 +35,7 @@ function pd.update()
         if pd.buttonJustPressed(pd.kButtonA) then
             gameState = "active"
             playerSprite:moveTo(playerStartX, playerStartY)
-            obstacleSprite:moveTo(450, math.random(40, 200))
+            obstacleSprite:moveTo(450, math.random(0, 240))
         end
     elseif gameState == "active" then
         local crankPosition = pd.getCrankPosition()
@@ -47,7 +47,7 @@ function pd.update()
 
         obstacleSprite:moveBy(-obstacleSpeed, 0)
         if obstacleSprite.x < -20 then
-            obstacleSprite:moveTo(450, math.random(40, 200))
+            obstacleSprite:moveTo(450, math.random(0, 240))
         end
 
         if playerSprite.y > 270 or playerSprite.y < -30 then
