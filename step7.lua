@@ -48,7 +48,7 @@ function pd.update()
         end
 
         local actualX, actualY, collisions, length = obstacleSprite:moveWithCollisions(obstacleSprite.x - obstacleSpeed, obstacleSprite.y)
-        if actualX < -20 then
+        if obstacleSprite.x < -20 then
             obstacleSprite:moveTo(450, math.random(40, 200))
             score += 1
         end
