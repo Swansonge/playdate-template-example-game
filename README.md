@@ -6,4 +6,4 @@ This is a small example game to dip your toes into Playdate game development aft
 </p>
 
 # License
-This project is licensed under the Creative Commons Zero v1.0 Universal license.
+This project is licensed under the MIT license.
