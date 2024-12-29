@@ -2,8 +2,8 @@
 
 import "CoreLibs/sprites"
 
-local pd <const> = playdate
-local gfx <const> = pd.graphics
+local pd = playdate
+local gfx = pd.graphics
 
 -- Player
 local playerStartX = 40
