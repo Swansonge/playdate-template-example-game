@@ -1,0 +1,6 @@
+name=Example Game
+author=Swansonge
+description=Example game made in Lua
+bundleID=com.swansonge.example
+version=1.0.0
+buildNumber=1
